@@ -1,0 +1,9 @@
+﻿<Window x:Class="Testharness.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:myUserControl="clr-namespace:MockUserControl;assembly=MockUserControl"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <myUserControl:UserControl1 x:Name="userControl1"/>
+    </Grid>
+</Window>

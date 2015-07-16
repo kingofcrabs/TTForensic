@@ -52,12 +52,8 @@
     <Compile Include="PipettingInfo.cs" />
     <Compile Include="UIFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\Folders.cs" />
     <Compile Include="worklist.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Example.xaml">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">

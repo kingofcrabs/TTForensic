@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Tecan.TouchPad.Shared;
 
 namespace TTForensic
@@ -14,11 +15,28 @@ namespace TTForensic
         {
             if (MethodName.Equals("ShowSettingForm"))
             {
-                var grid = ControlUI.FindName("papaGrid");
-                string find = grid == null ? "not found" : "found";
-                MessageBox.Show(find);
+                var container = ControlUI.FindName("lstPCRVolume");
+                ListBox lstPCRVolume = (ListBox)container;
+                InitialPCRVolumes(lstPCRVolume);
             }
             return string.Empty;
+        }
+
+        private void InitialPCRVolumes(ListBox lstPCRVolume)
+        {
+            for(int i = 0; i< 4; i++)
+            {
+                ListBoxItem lstItem = new ListBoxItem();
+                lstItem.Content = string.Format("{0}μl",i+1);
+                var color = GlobalVars.Instance.SampleColors[i];
+                lstItem.Background = new SolidColorBrush(color);
+                lstPCRVolume.Items.Add(lstItem);
+            }
+
+            ListBoxItem positiveItm = new ListBoxItem();
+            positiveItm.Content = " +";
+            positiveItm.Background = Brushes.LightBlue;
+            lstPCRVolume.Items.Add(positiveItm);
         }
     }
 }
