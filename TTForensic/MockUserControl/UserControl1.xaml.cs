@@ -27,7 +27,6 @@ namespace MockUserControl
 
         void UserControl1_Loaded(object sender, RoutedEventArgs e)
         {
-            lstPlateID.ItemsSource = new List<int>() {1,2,3 };
 
         }
     }

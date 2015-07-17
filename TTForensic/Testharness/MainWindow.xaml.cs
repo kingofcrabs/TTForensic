@@ -28,7 +28,7 @@ namespace Testharness
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            UIFactory uiFactory = new UIFactory();
+            CommandProcessor uiFactory = new CommandProcessor();
             uiFactory.MethodDistributer(userControl1, "ShowSettingForm", null, null);
         }
     }

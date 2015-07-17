@@ -13,35 +13,20 @@ namespace TTForensic
     {
         private static GlobalVars _instance;
         AppSettingsSection myDllConfigAppSettings;
-        List<Color> sampleColors;
+    
+  
+        public string PCRType { get; set; }
+        public int CurrentPlateID { get; set; }
+        public int SampleCount { get; set; }
+        public int SampleCountPerPlate { get; set; }
         public GlobalVars()
         {
             Configuration myDllConfig = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
             myDllConfigAppSettings = (AppSettingsSection)myDllConfig.GetSection("appSettings");
-            sampleColors = ReadSampleColorConfigs();
+
         }
 
-        private List<Color> ReadSampleColorConfigs()
-        {
-            string sFile = Folders.GetDataFolder() + "sampleColors.txt";
-            IEnumerable<string> strs = File.ReadAllLines(sFile);
-            List<Color> colors = new List<Color>();
-            foreach(string s in strs)
-            {
-                colors.Add(ParseColor(s));
-            }
-            return colors;
-        }
-
-        private Color ParseColor(string s)
-        {
-            string[] strs = s.Split(',');
-            byte a = byte.Parse(strs[0]);
-            byte r = byte.Parse(strs[1]);
-            byte g = byte.Parse(strs[2]);
-            byte b = byte.Parse(strs[3]);
-            return Color.FromArgb(a, r, g, b);
-        }
+      
 
         public string this[string key]
         {
@@ -51,13 +36,7 @@ namespace TTForensic
             }
         }
 
-        public List<Color> SampleColors
-        {
-            get
-            {
-                return sampleColors;
-            }
-        }
+     
 
         static public GlobalVars Instance
         {
