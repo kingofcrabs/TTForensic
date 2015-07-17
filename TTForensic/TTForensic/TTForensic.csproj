@@ -49,8 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalVars.cs" />
+    <Compile Include="PipettingDispatcher.cs" />
     <Compile Include="PipettingInfo.cs" />
-    <Compile Include="plateViewer.cs" />
+    <Compile Include="PlateViewer.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PCRSettings.cs" />

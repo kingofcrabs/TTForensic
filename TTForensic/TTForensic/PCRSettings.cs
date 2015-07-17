@@ -98,8 +98,48 @@ namespace TTForensic
             return pipettingVolume;
         }
 
+        public void CheckValid()
+        {
+            int totalCnt = Vals.Sum(x => x.Value.Count());
+            if(totalCnt < GlobalVars.Instance.SampleCount)
+            {
+                throw new Exception(string.Format("样品未能全部设置,期望数量为:{0}已设置数量为:{1}！", GlobalVars.Instance.SampleCount, totalCnt));
+            }
 
-        
+            for (int i = 0; i < Vals.Count; i++ )
+            {
+                var dict = Vals.ElementAt(i).Value;
+                dict = dict.OrderBy(x => x.Key.WellID).ToDictionary(x => x.Key, x => x.Value);
+                Vals[i + 1] = dict;
+            }
+
+            foreach (KeyValuePair<int, Dictionary<POSITION, string>> pair in Vals)
+            {
+                int plateID = pair.Key;
+                string wellDesc = "";
+                bool isSequential = IsSequential(pair.Value, ref wellDesc);
+                if (!isSequential)
+                    throw new Exception(string.Format("{0}号样品板，{1}处未设置！", plateID, wellDesc));
+            }
+        }
+
+        private bool IsSequential(Dictionary<POSITION, string> dictionary, ref string wellDesc)
+        {
+            int totalCnt = dictionary.Count;
+            
+            int expectedWellID = 1;
+            foreach(KeyValuePair<POSITION,string> pair in dictionary)
+            {
+                if (expectedWellID != pair.Key.WellID)
+                {
+                    wellDesc = Common.GetWellDescription(expectedWellID);
+                    return false;
+                }
+                    
+                expectedWellID++;
+            }
+            return true;
+        }
     }
 
 }

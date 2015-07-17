@@ -63,14 +63,25 @@ namespace TTForensic
             if (!bMouseDown)
                 return;
             ptEnd = e.GetPosition(this);
-
             this.InvalidateVisual(); // cause a render
         }
 
         void MyFrameWorkElement_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            this.ReleaseMouseCapture();
             bMouseDown = false;
             ptEnd = e.GetPosition(this);
+            //clip the start & end
+            ClipStartEnd();
+            AvoidOverlap();
+            POSITION start, end;
+            AdjustStartEndPosition(out start, out end);
+            PCRSettings.Instance.Set(start, end);
+            this.InvalidateVisual();
+        }
+
+        private void AvoidOverlap()
+        {
             if (ptStart.X == ptEnd.X) //shift x
             {
                 ptEnd.X = ptStart.X + 1;
@@ -80,23 +91,32 @@ namespace TTForensic
             {
                 ptEnd.Y = ptStart.Y + 1;
             }
+        }
 
-            POSITION start, end;
-            AdjustStartEndPosition(out start, out end);
-            PCRSettings.Instance.Set(start, end);
-            this.InvalidateVisual();
+        private void ClipStartEnd()
+        {
+            ptEnd.X = Math.Min(ptEnd.X, _size.Width);
+            ptEnd.Y = Math.Min(ptEnd.Y, _size.Height);
+            ptStart.X = Math.Min(ptStart.X, _size.Width);
+            ptStart.Y = Math.Min(ptStart.Y, _size.Height);
+
+
+            ptEnd.X = Math.Max(ptEnd.X, _szMargin.Width);
+            ptEnd.Y = Math.Max(ptEnd.Y, _szMargin.Height);
+            ptStart.X = Math.Max(ptStart.X, _szMargin.Width);
+            ptStart.Y = Math.Max(ptStart.Y, _szMargin.Height);
         }
 
         void MyFrameWorkElement_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             ptStart = e.GetPosition(this);
+            this.CaptureMouse();
             bMouseDown = true;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            //liquids
-            //DrawLiquids(drawingContext);
+            //clip the point
             DrawAssays(drawingContext);
 
             //draw border
@@ -119,7 +139,6 @@ namespace TTForensic
                     Pen pen = CreateBorderPen();
                     drawingContext.DrawRectangle(Brushes.Transparent, pen, new Rect(ptStart, ptEnd));
                 }
-
             }
         }
 
@@ -330,11 +349,27 @@ namespace TTForensic
         public int x;
         public int y;
 
+        public int WellID
+        {
+            get
+            {
+                return Common.GetWellID(x, y);
+            }
+        }
+
         public POSITION(int xVal, int yVal)
         {
             x = xVal;
             y = yVal;
         }
 
+
+        public string Description 
+        { 
+            get
+            {
+                return  string.Format("{0}{1}", (char)(y + 'A'), (x + 1));
+            }
+        }
     }
 }
