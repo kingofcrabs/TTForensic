@@ -68,6 +68,10 @@ namespace TTForensic
             try
             {
                 PCRSettings.Instance.CheckValid();
+                PipettingDispatcher pipettingDispatcher = new PipettingDispatcher();
+                List<PipettingInfo> pipettingInfoSamples = new List<PipettingInfo>();
+                List<PipettingInfo> pipettingInfoPCRs = new List<PipettingInfo>();
+                pipettingDispatcher.PreparePipettingList(ref pipettingInfoSamples, ref pipettingInfoPCRs);
                 //GeneratePipettingInfos();
             }
             catch(Exception ex)
@@ -114,8 +118,8 @@ namespace TTForensic
 
         private void InitialPCRTypes(ListBox lstPCRType)
         {
-            var pcrType_ColorDict = PCRSettings.Instance.PCRType_Color;
-            foreach(KeyValuePair<string,Color> pair in pcrType_ColorDict)
+            var pcrType_Settings = PCRSettings.Instance.PCRType_Settings;
+            foreach (KeyValuePair<string, ItemSetting> pair in pcrType_Settings)
             {
                 ListBoxItem lstItem = new ListBoxItem();
                 int result;
@@ -125,7 +129,7 @@ namespace TTForensic
                 if (content.Length < 3)
                     content = " " + content;
                 lstItem.Content = content;
-                lstItem.Background = new SolidColorBrush(pair.Value);
+                lstItem.Background = new SolidColorBrush(pair.Value.color);
                 lstPCRType.Items.Add(lstItem);
             }
             lstPCRType.SelectedIndex = 0;

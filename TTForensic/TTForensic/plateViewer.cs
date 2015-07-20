@@ -151,7 +151,7 @@ namespace TTForensic
             {
                 string pcrType = Common.RemoveUL(pair.Value).Trim();
                 var pos = pair.Key;
-                var color = PCRSettings.Instance.PCRType_Color[pcrType];
+                var color = PCRSettings.Instance.PCRType_Settings[pcrType].color;
                 DrawWell(drawingContext, pos.x, pos.y, color, 100);
             }
         }
