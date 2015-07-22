@@ -57,7 +57,7 @@
     <Compile Include="PCRSettings.cs" />
     <Compile Include="Utility\common.cs" />
     <Compile Include="Utility\Folders.cs" />
-    <Compile Include="worklist.cs" />
+    <Compile Include="Worklist.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TTForensic.dll.config">

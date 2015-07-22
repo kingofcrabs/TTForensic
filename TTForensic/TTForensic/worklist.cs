@@ -5,11 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TTForensic;
+using TTForensic.Utility;
 
 
-namespace SaintX.Utility
+namespace TTForensic
 {
-    class worklist
+    class Worklist
     {
         #region scripts
         string wash = "W;";
@@ -17,13 +18,15 @@ namespace SaintX.Utility
         {
             int tipCountLiha = int.Parse(GlobalVars.Instance["tipCount"]);
             List<string> strs = new List<string>();
-            var liquidClass = GlobalVars.Instance["sampleLiquidClass"];
+            var liquidClass = "";//GlobalVars.Instance["sampleLiquidClass"];
             while(pipettingInfos.Count() > 0)
             {
                 var sameBatchPipettingInfos = pipettingInfos.Take(tipCountLiha);
                 strs.AddRange(GenerateSampleScriptsSameBatch(sameBatchPipettingInfos,liquidClass));
                 pipettingInfos = pipettingInfos.Except(sameBatchPipettingInfos);
             }
+            string sFile = Folders.GetOutputFolder() + "samples.gwl";
+            File.WriteAllLines(sFile, strs.ToArray());
         }
 
         private IEnumerable<string> GenerateSampleScriptsSameBatch(IEnumerable<PipettingInfo> sameBatchPipettingInfos,string liquidClass)
@@ -44,37 +47,34 @@ namespace SaintX.Utility
         {
             int tipCountLiha = int.Parse(GlobalVars.Instance["pcrTipCount"]);
             int tipMaxVolume = (int)(int.Parse(GlobalVars.Instance["pcrTipVolumeUL"]) * 0.8);
-            var groups = pipettingInfos.GroupBy(x => x.srcLabware + x.srcWellID); //group by different tips
+            List<List<PipettingInfo>> groupsList = pipettingInfos.GroupBy(x => x.srcLabware + x.srcWellID).Select(x=>x.ToList()).ToList(); //group by different tips
             List<string> scripts = new List<string>();
-            while(groups.Count() > 0)
+            while (groupsList.Count > 0)
             {
-                var sameTipGroups = groups.Take(tipCountLiha); //same batch tips which is the max cnt setting allows
+                List<List<PipettingInfo>> sameTipGroups = groupsList.Take(tipCountLiha).ToList(); //same batch tips which is the max cnt setting allows
                 scripts.AddRange(GenerateSameBatchScripts(sameTipGroups, tipMaxVolume));
-                groups = groups.Except(sameTipGroups);
+                groupsList = groupsList.Skip(tipCountLiha).ToList();
             }
+            string sFile = Folders.GetOutputFolder() + "pcr.gwl";
+            File.WriteAllLines(sFile, scripts.ToArray());
         }
 
-        private IEnumerable<string> GenerateSameBatchScripts(IEnumerable<IGrouping<string, PipettingInfo>> sameTipGroups,int maxTipVolume)
+        private IEnumerable<string> GenerateSameBatchScripts(List<List<PipettingInfo>> sameTipGroups, int tipMaxVolume)
         {
             List<string> strs = new List<string>();
-            List<List<PipettingInfo>> groups = new List<List<PipettingInfo>>();
-            foreach(var group in sameTipGroups)
+            while (sameTipGroups.Any(x => x.Count() > 0))
             {
-                groups.Add(group.ToList());
-            }
-            while (groups.Any(x => x.Count() > 0))
-            {
-                for (int i = 0; i < groups.Count; i++) //go through each group
+                for (int i = 0; i < sameTipGroups.Count; i++) //go through each tip
                 {
-                    var curGroup = groups[i];
-                    int cnt = curGroup.Count();
-                    if( cnt == 0)
+                    var curTipPipettings = sameTipGroups[i];
+                    int cnt = sameTipGroups[i].Count();
+                    if (cnt == 0)
                         continue;
-                    int maxAllowCnt = maxTipVolume/ (int)curGroup.First().volume;
+                    int maxAllowCnt = tipMaxVolume / (int)curTipPipettings.First().volume;
                     maxAllowCnt = Math.Min(cnt, maxAllowCnt);
-                    var multiDispensePipettingInfos = curGroup.Take(maxAllowCnt);
+                    var multiDispensePipettingInfos = curTipPipettings.Take(maxAllowCnt);
                     strs.AddRange(GenerateMultiDispenseScript(multiDispensePipettingInfos));
-                    curGroup = curGroup.Except(multiDispensePipettingInfos).ToList();
+                    sameTipGroups[i] = curTipPipettings.Except(multiDispensePipettingInfos).ToList();
                 }
             }
             return strs;
@@ -84,7 +84,7 @@ namespace SaintX.Utility
         {
             List<string> strs = new List<string>();
             var firstPipettingInfo = multiDispensePipettingInfos.First();
-            var liquidClass = GlobalVars.Instance["pcrLiquidClass"];
+            var liquidClass = "";//GlobalVars.Instance["pcrLiquidClass"];
             strs.Add(GetAspirate(firstPipettingInfo.srcLabware, firstPipettingInfo.srcWellID, firstPipettingInfo.volume, liquidClass));
             foreach(var pipettingInfo in multiDispensePipettingInfos)
                 strs.Add(GetDispense(pipettingInfo.dstLabware, pipettingInfo.dstWellID, pipettingInfo.volume, liquidClass));

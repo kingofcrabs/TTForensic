@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Tecan.TouchPad.Shared;
+using TTForensic.Utility;
 
 namespace TTForensic
 {
@@ -34,7 +36,7 @@ namespace TTForensic
                 //grid
                 container = ControlUI.FindName("plateViewer");
                 Grid grid = (Grid)container;
-                plateViewer = new PlateViewer(new Size(400, 300), new Size(50, 20));
+                plateViewer = new PlateViewer(new Size(400, 360), new Size(50,40));
                 grid.Children.Add(plateViewer);
 
                 //button
@@ -65,22 +67,42 @@ namespace TTForensic
         void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
             ClearInfo();
+#if DEBUG
+#else
             try
+#endif
             {
                 PCRSettings.Instance.CheckValid();
                 PipettingDispatcher pipettingDispatcher = new PipettingDispatcher();
                 List<PipettingInfo> pipettingInfoSamples = new List<PipettingInfo>();
                 List<PipettingInfo> pipettingInfoPCRs = new List<PipettingInfo>();
                 pipettingDispatcher.PreparePipettingList(ref pipettingInfoSamples, ref pipettingInfoPCRs);
-                //GeneratePipettingInfos();
+#if DEBUG
+                Write2File(pipettingInfoSamples,"samples");
+                Write2File(pipettingInfoPCRs, "PCRs");
+#endif
+                Worklist wklist = new Worklist();
+                wklist.GenerateSampleScripts(pipettingInfoSamples);
+                wklist.GeneratePCRScripts(pipettingInfoPCRs);
             }
+#if DEBUG
+#else
+
             catch(Exception ex)
             {
                 SetInfo(ex.Message);
             }
+#endif
+            SetInfo("成功生产worklist!",false);
         }
 
-   
+        private void Write2File(List<PipettingInfo> pipettingInfoSamples, string fileName)
+        {
+            string sFile = Folders.GetOutputFolder() + fileName + ".txt";   
+            List<string> strs = new List<string>();
+            pipettingInfoSamples.ForEach(x => strs.Add(x.ToString()));
+            File.WriteAllLines(sFile, strs.ToArray());
+        }
 
         private void InitialPlateIDs(ListBox lstPlateID)
         {

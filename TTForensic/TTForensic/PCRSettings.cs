@@ -11,7 +11,6 @@ namespace TTForensic
     class PCRSettings
     {
         static PCRSettings instance = null;
-        int pipettingVolume; 
         public Dictionary<int, Dictionary<POSITION,string>> Vals { get; set; }
         private Dictionary<string, ItemSetting> pcrType_Settings;
         
@@ -37,7 +36,6 @@ namespace TTForensic
 
         private PCRSettings()
         {
-            pipettingVolume = int.Parse(GlobalVars.Instance["pipettingVolume"]);
             Vals = new Dictionary<int, Dictionary<POSITION, string>>();
             pcrType_Settings = ReadSettings();
         }
@@ -125,16 +123,6 @@ namespace TTForensic
             byte g = byte.Parse(strs[i++]);
             byte b = byte.Parse(strs[i++]);
             return new KeyValuePair<string, Color>(desc, Color.FromArgb(255, r, g, b));
-        }
-
-        public int GetSampleVolume(string pcrType)
-        {
-            string sDigit = Common.GetDigitalStr(pcrType);
-            if(sDigit != "")
-            {
-                return int.Parse(sDigit);
-            }
-            return pipettingVolume;
         }
 
         public void CheckValid()

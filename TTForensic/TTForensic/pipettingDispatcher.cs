@@ -7,13 +7,10 @@ namespace TTForensic
 {
     class PipettingDispatcher
     {
-        int pipettingVolume = int.Parse(GlobalVars.Instance["pipettingVolume"]);
         Dictionary<string, int> pcrType_wellID = new Dictionary<string, int>() { };
-
         public PipettingDispatcher()
         {
             AllocatePCRWellIDs();
-          
         }
 
         private void AllocatePCRWellIDs()
@@ -23,6 +20,7 @@ namespace TTForensic
             pcrType_wellID.Add("+", 5);
             pcrType_wellID.Add("-", 6);
         }
+
         public void PreparePipettingList(ref List<PipettingInfo> pipettingInfoSamples, ref List<PipettingInfo> pipettingInfoPCRs)
         {
             int totalSampleCnt = GlobalVars.Instance.SampleCount;
@@ -35,6 +33,7 @@ namespace TTForensic
                 if (remainingCnt <= 0)
                     break;
             }
+            
         }
 
         private void PreparePipettingListThisPCRPlate(KeyValuePair<int, Dictionary<POSITION, string>> thisPlatePCRSetting,
@@ -49,41 +48,28 @@ namespace TTForensic
             int thisPlateFinishedCnt = 0;
             foreach(KeyValuePair<POSITION,string> pair in thisPlatePCRSetting.Value)
             {
-                if (thisPlateFinishedCnt > remainingCnt)
+                if (thisPlateFinishedCnt >= remainingCnt)
                     break;
+                string sType = GetTypeFromDescription(pair.Value);
                 if(IsNormalSample(pair.Value))
                 {
                     string sPlate = "";
                     int wellID = 0;
                     GetSamplePosition(currentSampleIndex++, ref sPlate, ref wellID);
-                    int volume = GetSampleVolume(pair.Value);
+                    int volume = PCRSettings.Instance.PCRType_Settings[sType].sampleVol;
                     pipettingInfoSamples.Add(new PipettingInfo(sPlate, wellID, volume, DstPlateName, pair.Key.WellID));
                 }
-
-                //PCR
-                string sType = GetTypeFromDescription(pair.Value);
-                pipettingInfoPCRs.Add(new PipettingInfo(PCRLabware, pcrType_wellID[sType], GetPCRVolume(pair.Value), DstPlateName, pair.Key.WellID));
+                int pcrVol = PCRSettings.Instance.PCRType_Settings[sType].pcrVol;
+                pipettingInfoPCRs.Add(new PipettingInfo(PCRLabware, pcrType_wellID[sType], pcrVol, DstPlateName, pair.Key.WellID));
                 thisPlateFinishedCnt++;
             }
         }
         private string GetTypeFromDescription(string description)
         {
             string s = description.Replace("μl", "");
-            return s;
+            return s.Trim();
         }
-        private int GetSampleVolume(string s)
-        {
-            int val;
-            s = s.Replace("μl", "");
-            int.TryParse(s, out val);
-            return pipettingVolume - val;
-        }
-        private int GetPCRVolume(string s)
-        {
-            int val;
-            int.TryParse(s, out val);
-            return val;
-        }
+    
         private bool IsNormalSample(string s)
         {
             int val;
@@ -97,7 +83,7 @@ namespace TTForensic
             int smpCntPerPlate = GlobalVars.Instance.SampleCountPerPlate;
             int plateID = (curSampleID + smpCntPerPlate - 1) / smpCntPerPlate;
             wellID = curSampleID - (plateID-1) * smpCntPerPlate;
-            sPlate = string.Format("sample{0}", curSampleID);
+            sPlate = string.Format("sample{0}", plateID);
         }
     }
 }

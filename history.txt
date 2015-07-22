@@ -1,3 +1,4 @@
 create
 7/16 add userControl & testharness for test.
 7/17 implement draw, selection PCRType, switch between plates.
+7/22 fix some drawing bug, implement worklist.

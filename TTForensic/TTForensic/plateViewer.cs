@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using TTForensic.Utility;
 
@@ -17,6 +18,7 @@ namespace TTForensic
         Pen defaultPen;
         Point ptStart;
         Point ptEnd;
+        Point ptCurrent = new Point(0, 0);
         bool bMouseDown = false;
         
         public int Columns
@@ -60,9 +62,10 @@ namespace TTForensic
 
         void MyFrameWorkElement_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (!bMouseDown)
-                return;
-            ptEnd = e.GetPosition(this);
+            ptCurrent = e.GetPosition(this);
+            ClipPoint(ref ptCurrent);
+            if (bMouseDown)
+                ptEnd = ptCurrent;
             this.InvalidateVisual(); // cause a render
         }
 
@@ -92,19 +95,17 @@ namespace TTForensic
                 ptEnd.Y = ptStart.Y + 1;
             }
         }
-
+        private void ClipPoint(ref Point pt)
+        {
+            pt.X = Math.Min(pt.X, _size.Width);
+            pt.Y = Math.Min(pt.Y, _size.Height);
+            pt.X = Math.Max(pt.X, _szMargin.Width);
+            pt.Y = Math.Max(pt.Y, _szMargin.Height);
+        }
         private void ClipStartEnd()
         {
-            ptEnd.X = Math.Min(ptEnd.X, _size.Width);
-            ptEnd.Y = Math.Min(ptEnd.Y, _size.Height);
-            ptStart.X = Math.Min(ptStart.X, _size.Width);
-            ptStart.Y = Math.Min(ptStart.Y, _size.Height);
-
-
-            ptEnd.X = Math.Max(ptEnd.X, _szMargin.Width);
-            ptEnd.Y = Math.Max(ptEnd.Y, _szMargin.Height);
-            ptStart.X = Math.Max(ptStart.X, _szMargin.Width);
-            ptStart.Y = Math.Max(ptStart.Y, _szMargin.Height);
+            ClipPoint(ref ptStart);
+            ClipPoint(ref ptEnd);
         }
 
         void MyFrameWorkElement_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -128,6 +129,8 @@ namespace TTForensic
             //label
             DrawLabels(drawingContext);
 
+           
+
             if (bMouseDown)
             {
                 drawingContext.DrawRectangle(Brushes.Wheat, defaultPen, new Rect(ptStart, ptEnd));
@@ -140,6 +143,36 @@ namespace TTForensic
                     drawingContext.DrawRectangle(Brushes.Transparent, pen, new Rect(ptStart, ptEnd));
                 }
             }
+             //draw hint
+            DrawHint(drawingContext);
+        }
+
+        private void DrawHint(DrawingContext drawingContext)
+        {
+            var wellWidth = GetWellWidth();
+            var wellHeight = GetWellHeight();
+            if (wellWidth == 0 || wellHeight == 0 || ptCurrent.X == 0)
+                return;
+
+            
+            int height = (int)(this.ActualWidth / 800.0 * 20);
+
+            Point pt2Draw = AdjustPosition(ptCurrent);
+            pt2Draw.X = Math.Min(pt2Draw.X, _size.Width - wellWidth);
+            pt2Draw.Y = Math.Min(pt2Draw.Y, _size.Height);
+            Point ptText = new Point(pt2Draw.X + wellWidth / 3, pt2Draw.Y - wellHeight / 1.5);
+            string desc = GetDescription(ptText);
+
+            var txt = new FormattedText(desc,
+                                        System.Globalization.CultureInfo.CurrentCulture,
+                                        FlowDirection.LeftToRight,
+                                        new Typeface("Courier new"),
+                                        height,
+                                        Brushes.Black);
+            drawingContext.DrawText(txt, ptText);
+            pt2Draw.Y -= wellHeight;
+            var brush = new SolidColorBrush(Color.FromArgb(255,50,255,120));
+            drawingContext.DrawRectangle(Brushes.Transparent,new Pen(Brushes.Wheat,3),new Rect(pt2Draw,new Size(wellWidth,wellHeight)));
         }
 
         private void DrawAssays(DrawingContext drawingContext)
@@ -251,6 +284,7 @@ namespace TTForensic
 
         private void DrawLabels(DrawingContext drawingContext)
         {
+            int height = (int)(this.ActualWidth / 800.0 * 20);
             for (int x = 1; x < _col + 1; x++)
             {
                 var txt = new FormattedText(
@@ -258,13 +292,13 @@ namespace TTForensic
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 new Typeface("Courier new"),
-                20,
+                height,
                 Brushes.Black);
 
                 int xPos = (int)((x-0.6) * GetWellWidth()) + (int)_szMargin.Width;
 
                 drawingContext.DrawText(txt,
-                new Point(xPos, _szMargin.Height -20)
+                new Point(xPos, _szMargin.Height - height)
                 );
                 //drawingContext.DrawLine(new Pen(defaultLineBrush, 1), new Point(xPos, 0), new Point(xPos, _size.Height));
             }
@@ -277,13 +311,13 @@ namespace TTForensic
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 new Typeface("Courier new"),
-                20,
+                height,
                 Brushes.Black);
 
                 int yPos = (int)((y-0.7) * GetWellHeight()) + (int)_szMargin.Height;
 
                 drawingContext.DrawText(txt,
-                new Point(_szMargin.Width - 20, yPos)
+                new Point(_szMargin.Width - height, yPos)
                 );
 
                 //drawingContext.DrawLine(new Pen(defaultLineBrush, 1), new Point(xPos, 0), new Point(xPos, _size.Height));
@@ -332,14 +366,11 @@ namespace TTForensic
             return GetPos(ptEnd);
         }
 
-        internal string GetDescription(Point pt, string sPlateName, ref string sErrMsg)
+        internal string GetDescription(Point pt)
         {
             POSITION pos = GetPos(pt);
-
-            string sWellDesc = string.Format("PlateID:{0} Well:{1}{2} ", sPlateName, (char)(pos.y + 'A'), (pos.x + 1));
-            string ret = "\r\n";
-            string sDes = sWellDesc + ret;
-            return sDes;
+            string sWellDesc = string.Format("{0}{1} ",  (char)(pos.y + 'A'), (pos.x + 1));
+            return sWellDesc;
         }
     }
 
