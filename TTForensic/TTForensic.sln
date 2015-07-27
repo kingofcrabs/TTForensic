@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockUserControl", "MockUser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testharness", "Testharness\Testharness.csproj", "{6141D187-838A-4F3B-AE33-C4C235D60151}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F73E315A-A0E2-4B47-85A9-C3F400C7D661}"
+	ProjectSection(SolutionItems) = preProject
+		TT.txt = TT.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
