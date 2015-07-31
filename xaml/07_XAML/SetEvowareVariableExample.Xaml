@@ -1,0 +1,122 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"              
+             Width="800" Height="410">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+        <Grid>
+            <TextBlock >This Example shows, how to set EVOware variable via the RUP Xaml-Plugin</TextBlock>
+        </Grid>
+        <Separator Grid.Row="1" />
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"  />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Variable 1:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="10" Width="150" HorizontalAlignment="Left"
+			         xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                     custom:AttachedUIProperties.VariableName="Variable1"
+            />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Variable 2:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <CheckBox Grid.Row="1" Grid.Column="1" Margin="10" Content="Checkbox" Width="150" HorizontalAlignment="Left"
+		              xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                      custom:AttachedUIProperties.VariableName="Variable2"
+			/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Variable 3:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <ToggleButton Grid.Row="2" Grid.Column="1" Margin="10" Content="Toggle Button" Width="150" HorizontalAlignment="Left"
+                          xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                          custom:AttachedUIProperties.VariableName="Variable3"              
+			/>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Variable 4:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="10" Width="150" HorizontalAlignment="Left"
+			          xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                      custom:AttachedUIProperties.VariableName="Variable4"
+			>
+                <ComboBoxItem Content="First Item" />
+                <ComboBoxItem Content="Second Item" />
+                <ComboBoxItem Content="Third Item" />
+            </ComboBox>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Variable 5/6:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <StackPanel Grid.Row="4" Grid.Column="1" Margin="10" Width="150" HorizontalAlignment="Left">
+                <RadioButton GroupName="test" Content="Value 5"
+				             xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                             custom:AttachedUIProperties.VariableName="Variable5"
+                />
+				
+                <RadioButton GroupName="test" Content="Value 6"
+				             xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                             custom:AttachedUIProperties.VariableName="Variable6"
+				/>
+            </StackPanel>
+
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Variable 7:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <RichTextBox Grid.Row="5" Height="50" Grid.Column="1" Margin="10" Width="150" HorizontalAlignment="Left"
+                         xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                         custom:AttachedUIProperties.VariableName="Variable7"
+			/>
+
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Variable 8:" HorizontalAlignment="Right"  VerticalAlignment="Center" />
+            <Slider x:Name="slide" Grid.Row="6" Grid.Column="1" Margin="10"
+                    xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                    custom:AttachedUIProperties.VariableName="Variable8"
+            />
+
+			<!-- This Variable intentionally is not part of the EVOware script handling this XAML file.-->
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="Variable 9:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            <TextBox Grid.Row="7" Margin="10" Grid.Column="1" Width="150" HorizontalAlignment="Left"
+                     xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                     custom:AttachedUIProperties.KeyboardMode="numpad"
+                     custom:AttachedUIProperties.VariableName="Variable9"
+					 custom:AttachedUIProperties.IsMandatory="True" 
+					 custom:AttachedUIProperties.ErrorHint="Variable 9: Value has to be entered. Though the variable does not exist in EVOware script."
+            />
+            
+        </Grid>
+        
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"  />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Variable 10:" HorizontalAlignment="Right"  VerticalAlignment="Center"/>
+            
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Progress bar (only set by slider):" HorizontalAlignment="Right"  VerticalAlignment="Center" />
+            <ProgressBar Grid.Row="6" Grid.Column="1" Margin="10" Value="{Binding ElementName=slide, Path=Value, Mode=OneWay}" Minimum="{Binding ElementName=slide, Path=Minimum, Mode=OneWay}" Maximum="{Binding ElementName=slide, Path=Maximum, Mode=OneWay}"/>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -13,12 +13,17 @@ namespace TTForensic
 {
     public class CommandProcessor : IRUPCallbackHandler
     {
-        PlateViewer plateViewer = null;
-        TextBox txtInfo = null;
+      
         public string MethodDistributer(System.Windows.Controls.UserControl ControlUI, string MethodName, string Parameter, Tecan.TouchTools.Interfaces.ITouchToolsServices services)
         {
+            MessageBox.Show("Enter");
+            PlateViewer plateViewer = null;
+            TextBox txtInfo = null;
             if (MethodName.Equals("ShowSettingForm"))
             {
+                MessageBox.Show("ShowSettingForm");
+                return string.Empty;
+
 #if DEBUG
                 GlobalVars.Instance.SampleCount = 44;
                 GlobalVars.Instance.SampleCountPerPlate = 24;
@@ -54,8 +59,8 @@ namespace TTForensic
 
         void SetInfo(string txt, bool isError = true)
         {
-            txtInfo.Text = txt;
-            txtInfo.Foreground = isError ? Brushes.Red : Brushes.Black;
+            GlobalVars.Instance.TextInfo.Text = txt;
+            GlobalVars.Instance.TextInfo.Foreground = isError ? Brushes.Red : Brushes.Black;
         }
 
         private void ClearInfo()
@@ -127,7 +132,7 @@ namespace TTForensic
 
             int id = (int)e.AddedItems[0];
             GlobalVars.Instance.CurrentPlateID = id;
-            plateViewer.InvalidateVisual();
+            GlobalVars.Instance.PlateViewer.InvalidateVisual();
         }
 
         void lstPCRVolume_SelectionChanged(object sender, SelectionChangedEventArgs e)

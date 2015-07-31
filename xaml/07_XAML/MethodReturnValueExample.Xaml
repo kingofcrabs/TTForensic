@@ -1,0 +1,50 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             Width="800" Height="410">
+    <Grid Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" Width="600" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock TextWrapping="Wrap" Grid.Row="0">This Example will show, how to use a custom xaml-file and a custom library to call a Method and display the returnvalue with and without a Methodparameter</TextBlock>
+
+        <Separator Grid.Row="1"></Separator>
+        <TextBlock  Grid.Row="2" >Call a Method without parameter</TextBlock>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Call"  Margin="5" Width="120"
+                    xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                    custom:AttachedUIProperties.MethodInformation="CallReturnValueMethod"                    
+                    custom:AttachedUIProperties.TargetControlName="ReturnValueTextBox1"
+                    />
+            <TextBox Grid.Column="1" x:Name="ReturnValueTextBox1" Margin="5"  />
+        </Grid>
+
+        <Separator Grid.Row="4"></Separator>
+        <TextBlock  Grid.Row="5"  >Call a Method with parameter</TextBlock>
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Content="Call"  Margin="5" Width="120"
+                    xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls" 
+                    custom:AttachedUIProperties.MethodInformation="CallReturnValueMethod"
+                    custom:AttachedUIProperties.Parameter="~Methodparameter~"
+                    custom:AttachedUIProperties.TargetControlName="ReturnValueTextBox2"
+                    />
+            <TextBox Grid.Column="1" x:Name="ReturnValueTextBox2" Margin="5" TextWrapping="Wrap" />
+        </Grid>
+    </Grid>
+</UserControl>

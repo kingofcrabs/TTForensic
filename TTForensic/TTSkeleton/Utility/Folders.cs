@@ -5,14 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace TTForensic.Utility
+namespace TTSkeleton.Utility
 {
     class Folders
     {
         static public string GetExeFolder()
         {
             return @"C:\TouchToolsData\07_XAML\";
-            
+
         }
         static public string GetLastRunInfoFile()
         {
