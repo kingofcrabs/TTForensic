@@ -420,7 +420,7 @@ namespace TTSkeleton
         protected override void OnRender(DrawingContext drawingContext)
         {
             //clip the point
-            //DrawAssays(drawingContext);
+            DrawAssays(drawingContext);
 
             //draw border
             DrawBorder(drawingContext);
@@ -477,19 +477,19 @@ namespace TTSkeleton
             drawingContext.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Wheat, 3), new Rect(pt2Draw, new Size(wellWidth, wellHeight)));
         }
 
-        //private void DrawAssays(DrawingContext drawingContext)
-        //{
-        //    if (!PCRSettings.Instance.Vals.ContainsKey(GlobalVars.Instance.CurrentPlateID))
-        //        return;
-        //    Dictionary<POSITION, string> curPlatePosVals = PCRSettings.Instance.Vals[GlobalVars.Instance.CurrentPlateID];
-        //    foreach (KeyValuePair<POSITION, string> pair in curPlatePosVals)
-        //    {
-        //        string pcrType = Common.RemoveUL(pair.Value).Trim();
-        //        var pos = pair.Key;
-        //        var color = PCRSettings.Instance.PCRType_Settings[pcrType].color;
-        //        DrawWell(drawingContext, pos.x, pos.y, color, 100);
-        //    }
-        //}
+        private void DrawAssays(DrawingContext drawingContext)
+        {
+            if (!PCRSettings.Instance.Vals.ContainsKey(GlobalVars.Instance.CurrentPlateID))
+                return;
+            Dictionary<POSITION, string> curPlatePosVals = PCRSettings.Instance.Vals[GlobalVars.Instance.CurrentPlateID];
+            foreach (KeyValuePair<POSITION, string> pair in curPlatePosVals)
+            {
+                string pcrType = Common.RemoveUL(pair.Value).Trim();
+                var pos = pair.Key;
+                var color = PCRSettings.Instance.PCRType_Settings[pcrType].color;
+                DrawWell(drawingContext, pos.x, pos.y, color, 100);
+            }
+        }
 
         //private void DrawLiquids(DrawingContext drawingContext)
         //{

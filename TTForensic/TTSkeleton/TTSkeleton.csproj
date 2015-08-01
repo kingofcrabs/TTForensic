@@ -51,7 +51,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisableNextButtonExample.cs" />
+    <Compile Include="CommandProcessor.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="PCRSettings.cs" />
     <Compile Include="PlateViewer.cs" />

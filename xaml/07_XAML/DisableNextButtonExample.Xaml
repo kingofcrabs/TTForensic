@@ -28,16 +28,76 @@
                 xmlns:custom="clr-namespace:Tecan.RUP.DefaultControls.AttachedProperties;assembly=Tecan.RUP.DefaultControls"
                 custom:AttachedUIProperties.MethodInformation="CallDisableEnableNextButtonMethod"/>
 	</Grid>
-	
-	  <Grid Name="hintGrid" Grid.Row="1" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
-                <ColumnDefinition Width="*"/>
+	<Grid Name="inputGrid" Grid.Column="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="70" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <Label Margin="5,0,0,0">样品板编号：</Label>
+                <ListBox Name="lstPlateID"  Height="45" Margin="5,0,5,0" BorderBrush="Black">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="TextBlock.FontSize" Value="24"/>
+                            <Setter Property="Padding" Value="10,2,10,2"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="BorderBrush" Value="SeaGreen"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="LightGreen"></Setter>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="Orange"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
 
-            </Grid.ColumnDefinitions>
-            <Label Content="提示："/>
-            <TextBox Name="txtInfo" Margin="0,5,50,5" Grid.Column="1" IsReadOnly="True"></TextBox>
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <Label Margin="5,0,0,0">PCR上样体积：</Label>
+                <ListBox Margin="5,30,5,5" Grid.Row="1" Name="lstPCRType" VerticalAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Width" Value="50"/>
+                            <Setter Property="TextBlock.FontSize" Value="24"/>
+                            <Setter Property="Padding" Value="6,6,6,6"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderThickness" Value="2"></Setter>
+                                    <Setter Property="BorderBrush" Value="Blue"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+
+            </Grid>
+            <Button Grid.Row="2"  Content="确定" Name="btnConfirm" FontFamily="SimHei" FontSize="16" Margin="10,10,10,10" />
+
         </Grid>
+		<Grid Name="hintGrid" Grid.Row="1" Grid.Column="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="50"/>
+				<ColumnDefinition Width="*"/>
+
+			</Grid.ColumnDefinitions>
+			<Label Content="提示："/>
+			<TextBox Name="txtInfo" Margin="0,5,50,5" Grid.Column="1" IsReadOnly="True"></TextBox>
+		</Grid>
        
 
     </Grid>
