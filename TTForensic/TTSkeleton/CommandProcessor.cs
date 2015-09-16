@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -35,7 +36,10 @@ namespace TTSkeleton
                 if (canvas != null)
                 {
                     Grid grid = (Grid)canvas;
+                    grid.Children.Clear();
+                    File.WriteAllText("d:\\test.txt", "haha");
                     PlateViewer plateViewer = new PlateViewer(new Size(480,360), new Size(20, 20));
+                    GlobalVars.Instance.PlateViewer = plateViewer;
                     grid.Children.Add(plateViewer);
                     Log.Info(MethodName);
                 }
@@ -52,15 +56,76 @@ namespace TTSkeleton
                     InitialPCRTypes(lstPCRType);
                     lstPCRType.SelectionChanged += lstPCRVolume_SelectionChanged;
                 }
-             
-                //container = ControlUI.FindName("lstPlateID");
-                //ListBox lstPlateID = (ListBox)container;
-                //InitialPlateIDs(lstPlateID);
-                //lstPlateID.SelectionChanged += lstPlateID_SelectionChanged;
+
+                container = ControlUI.FindName("lstPlateID");
+                ListBox lstPlateID = (ListBox)container;
+                InitialPlateIDs(lstPlateID);
+                lstPlateID.SelectionChanged += lstPlateID_SelectionChanged;
+
+                //button
+                container = ControlUI.FindName("btnConfirm");
+                Button btnConfirm = (Button)container;
+                btnConfirm.Click += btnConfirm_Click;
+
+                //textbox
+                container = ControlUI.FindName("txtInfo");
+                GlobalVars.Instance.TextInfo = (TextBox)container;
             }
             
             return string.Empty;
         }
+        private void ClearInfo()
+        {
+            SetInfo("");
+        }
+        void btnConfirm_Click(object sender, RoutedEventArgs e)
+        {
+            ClearInfo();
+#if DEBUG
+#else
+            try
+#endif
+            {
+                PCRSettings.Instance.CheckValid();
+                PipettingDispatcher pipettingDispatcher = new PipettingDispatcher();
+                List<PipettingInfo> pipettingInfoSamples = new List<PipettingInfo>();
+                List<PipettingInfo> pipettingInfoPCRs = new List<PipettingInfo>();
+                pipettingDispatcher.PreparePipettingList(ref pipettingInfoSamples, ref pipettingInfoPCRs);
+#if DEBUG
+                Write2File(pipettingInfoSamples, "samples");
+                Write2File(pipettingInfoPCRs, "PCRs");
+#endif
+                Worklist wklist = new Worklist();
+                wklist.GenerateSampleScripts(pipettingInfoSamples);
+                wklist.GeneratePCRScripts(pipettingInfoPCRs);
+            }
+#if DEBUG
+#else
+
+            catch(Exception ex)
+            {
+                SetInfo(ex.Message);
+            }
+#endif
+            SetInfo("成功生产worklist!", false);
+        }
+
+        void SetInfo(string txt, bool isError = true)
+        {
+            GlobalVars.Instance.TextInfo.Text = txt;
+            GlobalVars.Instance.TextInfo.Foreground = isError ? Brushes.Red : Brushes.Black;
+        }
+
+
+        private void Write2File(List<PipettingInfo> pipettingInfoSamples, string fileName)
+        {
+            string sFile = Folders.GetOutputFolder() + fileName + ".txt";
+            List<string> strs = new List<string>();
+            pipettingInfoSamples.ForEach(x => strs.Add(x.ToString()));
+            File.WriteAllLines(sFile, strs.ToArray());
+        }
+
+
          void lstPlateID_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 0)

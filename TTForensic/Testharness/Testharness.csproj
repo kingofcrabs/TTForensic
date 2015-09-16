@@ -98,9 +98,9 @@
       <Project>{07410ef2-c3da-4678-a401-c34280014f41}</Project>
       <Name>MockUserControl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TTForensic\TTForensic.csproj">
-      <Project>{e3d20d43-105f-4b04-9a9a-7fe35b6a7345}</Project>
-      <Name>TTForensic</Name>
+    <ProjectReference Include="..\TTSkeleton\TTSkeleton.csproj">
+      <Project>{a355fdae-c28f-41ce-88a2-679dd161b0f2}</Project>
+      <Name>TTSkeleton</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

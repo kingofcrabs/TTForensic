@@ -96,13 +96,10 @@
             <Button Grid.Row="2"  Content="确定" Name="btnConfirm" FontFamily="SimHei" FontSize="16" Margin="10,10,10,10" />
 
         </Grid>
-        <Grid Name="plateViewer">
-            <Grid Name="seeUGrid">
+        <Grid Name="canvas">
                 <Label Content="样品数：" HorizontalAlignment="Left" Margin="186,119,0,0" VerticalAlignment="Top"/>
                 <TextBox Name="sampleCnt" HorizontalAlignment="Left" Height="34" Margin="260,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
                 <Button FontFamily="SimHei" FontSize="16" Content="确定" HorizontalAlignment="Left" Margin="260,198,0,0" VerticalAlignment="Top" Width="120" Height="30"/>
-
-            </Grid>
         </Grid>
     </Grid>
 </UserControl>

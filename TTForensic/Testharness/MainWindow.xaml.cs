@@ -10,8 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using TTForensic;
+using TTSkeleton;
 
 namespace Testharness
 {
@@ -28,8 +27,8 @@ namespace Testharness
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            CommandProcessor uiFactory = new CommandProcessor();
-            uiFactory.MethodDistributer(userControl1, "ShowSettingForm", null, null);
+            DisableNextButtonExample uiFactory = new DisableNextButtonExample();
+            uiFactory.MethodDistributer(userControl1,"CallDisableEnableNextButtonMethod",null,null);
         }
     }
 }
