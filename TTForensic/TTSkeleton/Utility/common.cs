@@ -7,7 +7,6 @@ namespace TTSkeleton.Utility
 {
     class Common
     {
-        static int _col = 12;
         static int _row = 8;
         static public int GetWellID(int x, int y)
         {

@@ -16,7 +16,7 @@ namespace TTSkeleton
     /// <summary>
     /// The "DisableNextButtonExample" class implements the "IRUPCallbackHandler" interface to allow interaction between the xaml-file and the touch-tools-suite.
     /// </summary>
-    public class DisableNextButtonExample : IRUPCallbackHandler
+    public class SampleSettingControl : IRUPCallbackHandler
     {        
 
         /// <summary>
@@ -31,25 +31,44 @@ namespace TTSkeleton
         {
             if (MethodName.Equals("CallDisableEnableNextButtonMethod"))
             {
-                //Log.Info(MethodName);
+                Log.Info("find txtInfo");
+
+                //first, we prepare the txtInfo
+                var container = ControlUI.FindName("txtInfo");
+                GlobalVars.Instance.TextInfo = (TextBox)container;
+
+                try
+                {
+                    GlobalVars.Instance.SampleCount = ReadSampleCount(ControlUI);
+                    GlobalVars.Instance.SampleCountPerPlate = int.Parse(GlobalVars.Instance["sampleCountPerPlate"]);
+                }
+                catch(Exception ex)
+                {
+                    SetInfo(ex.Message);
+                    return "";
+                }
+                
                 var canvas = ControlUI.FindName("canvas");
                 if (canvas != null)
                 {
                     Grid grid = (Grid)canvas;
                     grid.Children.Clear();
-                    File.WriteAllText("d:\\test.txt", "haha");
+                    Log.Info("CallDisableEnableNextButtonMethod & canvas found!");
                     PlateViewer plateViewer = new PlateViewer(new Size(480,360), new Size(20, 20));
                     GlobalVars.Instance.PlateViewer = plateViewer;
                     grid.Children.Add(plateViewer);
-                    Log.Info(MethodName);
+                    Log.Info("canvas not null");
                 }
 
+                Log.Info("set inputGrid visibility");
+                container = ControlUI.FindName("inputGrid");
+                if(container != null)
+                {
+                    Grid inputGrid = (Grid)container;
+                    inputGrid.Visibility = Visibility.Visible;
+                }
 
-#if DEBUG
-                GlobalVars.Instance.SampleCount = 44;
-                GlobalVars.Instance.SampleCountPerPlate = 24;
-#endif
-                var container = ControlUI.FindName("lstPCRType");
+                container = ControlUI.FindName("lstPCRType");
                 if (container != null)
                 {
                     ListBox lstPCRType = (ListBox)container;
@@ -66,14 +85,44 @@ namespace TTSkeleton
                 container = ControlUI.FindName("btnConfirm");
                 Button btnConfirm = (Button)container;
                 btnConfirm.Click += btnConfirm_Click;
-
-                //textbox
-                container = ControlUI.FindName("txtInfo");
-                GlobalVars.Instance.TextInfo = (TextBox)container;
             }
-            
+            //here we disable next button
+
+            GlobalVars.Instance.Service = services;
+            EnableNextButton(false);
             return string.Empty;
         }
+
+        private void EnableNextButton(bool bEnable)
+        {
+            if(GlobalVars.Instance.Service != null)
+                GlobalVars.Instance.Service.TouchToolsGuiServices.GetButtonService(Tecan.TouchTools.Interfaces.RUP.TouchToolsButtons.Button4).IsEnabled = bEnable;
+        }
+
+        private int ReadSampleCount(UserControl ControlUI)
+        {
+            var container = ControlUI.FindName("txtSampleCnt");
+            TextBox txtSampleCnt = (TextBox)container;
+            if (txtSampleCnt == null)
+                throw new Exception("无法找到样本数textbox！");
+            if (txtSampleCnt.Text == "")
+            {
+                throw new Exception("请先设置样本数！");
+            }
+            int val = int.Parse(txtSampleCnt.Text);
+            if (val <= 0)
+            {
+                throw new Exception("样本数必须大于0！");
+            }
+            return val;
+        }
+
+        private int ReadSampleCountPerPlate()
+        {
+            string sCntPerPlateFile = Folders.GetDataFolder() + "countPerPlate.txt";
+            return int.Parse(File.ReadAllText(sCntPerPlateFile));
+        }
+
         private void ClearInfo()
         {
             SetInfo("");
@@ -104,10 +153,12 @@ namespace TTSkeleton
 
             catch(Exception ex)
             {
-                SetInfo(ex.Message);
+                SetInfo(ex.Message+ex.StackTrace);
+                return;
             }
 #endif
             SetInfo("成功生产worklist!", false);
+            EnableNextButton(true);
         }
 
         void SetInfo(string txt, bool isError = true)

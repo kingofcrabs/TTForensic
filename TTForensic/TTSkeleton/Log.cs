@@ -12,6 +12,7 @@ namespace TTSkeleton
     {
         private static void Write(string s)
         {
+            s += "\r\n";
             File.AppendAllText(@"C:\TouchToolsData\log.txt",s);
         }
 

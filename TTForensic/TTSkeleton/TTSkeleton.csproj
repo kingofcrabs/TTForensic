@@ -45,6 +45,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tecan.RUP.DefaultControls">
+      <HintPath>C:\Program Files (x86)\TECAN\EVOware\Drivers\RUPDriver\Plugins\Tecan.RUP.DefaultControls.dll</HintPath>
+    </Reference>
     <Reference Include="Tecan.TouchTools.Interfaces">
       <HintPath>ReferencedLibraries\Tecan.TouchTools.Interfaces.dll</HintPath>
     </Reference>
@@ -66,6 +69,12 @@
   <ItemGroup>
     <None Include="App.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TTSkeleton.Xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

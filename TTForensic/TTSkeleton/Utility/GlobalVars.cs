@@ -50,5 +50,7 @@ namespace TTSkeleton.Utility
             }
         }
 
+
+        public Tecan.TouchTools.Interfaces.ITouchToolsServices Service { get; set; }
     }
 }

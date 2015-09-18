@@ -19,6 +19,8 @@ namespace MockUserControl
     /// </summary>
     public partial class UserControl1 : UserControl
     {
+        public delegate void delSetSampleCount();
+        public event delSetSampleCount OnSetSampleCount;
         public UserControl1()
         {
             InitializeComponent();
@@ -28,6 +30,12 @@ namespace MockUserControl
         void UserControl1_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (OnSetSampleCount != null)
+                OnSetSampleCount();
         }
     }
 }
